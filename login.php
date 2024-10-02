@@ -1,6 +1,6 @@
 <?php
 session_start();
-include('config.php'); // Include database connection
+include('components/connect.php'); // Include database connection
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $username = $_POST['username'];
@@ -13,7 +13,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     }
 
     // Prepare SQL statement
-    $sql = "SELECT * FROM login_details WHERE username = ?";
+    $sql = "SELECT * FROM CAT1 WHERE username = ?";
     $stmt = $conn->prepare($sql);
 
     if ($stmt) {
@@ -24,16 +24,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         if ($result && $result->num_rows > 0) {
             $user = $result->fetch_assoc();
             $hashed_password = $user['password'];
-            if (password_verify($password, $hashed_password)) {
-                // Password is correct, create session
-                $_SESSION['username'] = $username;
-                // Redirect to another page
-                header("Location:admin.php");
-                exit;
-            } else {
-                header("Location:admin.php");
-                exit;
-            }
+            
         } else {
             echo "No user found with that username.";
         }
@@ -53,12 +44,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login Page</title>
-    <link rel="stylesheet" href="css/signin.css">
 </head>
 <body>
     <div class="login-container">
         <h1>Login</h1>
-        <form action="managerlogin.php" method="POST">
+        <form action="login.php" method="POST">
             <div class="input-group">
                 <label for="username">Username</label>
                 <input type="text" id="username" name="username" required>
@@ -71,6 +61,5 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             <button type="submit">Login</button>
         </form>
     </div>
-    <script src="javascript/signin.js" defer></script>
 </body>
 </html>
