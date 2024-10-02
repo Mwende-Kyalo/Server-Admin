@@ -23,7 +23,7 @@ if(isset($_POST['submit'])){
    $cpass = sha1($_POST['cpass']);
    $cpass = filter_var($cpass, FILTER_SANITIZE_STRING);
 
-   $select_user = $conn->prepare("SELECT * FROM `users` WHERE email = ? OR number = ?");
+   $select_user = $conn->prepare("SELECT * FROM `CAT1` WHERE email = ? OR number = ?");
    $select_user->execute([$email, $number]);
    $row = $select_user->fetch(PDO::FETCH_ASSOC);
 
@@ -33,14 +33,13 @@ if(isset($_POST['submit'])){
       if($pass != $cpass){
          $message[] = 'confirm password not matched!';
       }else{
-         $insert_user = $conn->prepare("INSERT INTO `users`(name, email, number, password) VALUES(?,?,?,?)");
+         $insert_user = $conn->prepare("INSERT INTO `CAT1`(name, email, number, password) VALUES(?,?,?,?)");
          $insert_user->execute([$name, $email, $number, $cpass]);
-         $select_user = $conn->prepare("SELECT * FROM `users` WHERE email = ? AND password = ?");
+         $select_user = $conn->prepare("SELECT * FROM `CAT1` WHERE email = ? AND password = ?");
          $select_user->execute([$email, $pass]);
          $row = $select_user->fetch(PDO::FETCH_ASSOC);
          if($select_user->rowCount() > 0){
             $_SESSION['user_id'] = $row['id'];
-            header('location:home.php');
          }
       }
    }
@@ -60,15 +59,9 @@ if(isset($_POST['submit'])){
    <!-- font awesome cdn link  -->
    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
 
-   <!-- custom css file link  -->
-   <link rel="stylesheet" href="css/style.css">
 
 </head>
 <body>
-   
-<!-- header section starts  -->
-<?php include 'components/user_header.php'; ?>
-<!-- header section ends -->
 
 <section class="form-container">
 
@@ -84,14 +77,5 @@ if(isset($_POST['submit'])){
    </form>
 
 </section>
-
-
-
-
-
-
-
-
-
 </body>
 </html>
